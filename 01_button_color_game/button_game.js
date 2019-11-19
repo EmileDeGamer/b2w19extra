@@ -2,18 +2,79 @@ const amountOfButtons = 3;
 var colors = ["magenta","cyan","greenyellow"];
 var win = false;
 
+let checkArray = []
+let winArray = []
+
+createButtons()
+
 function checkWin() {
-    if(buttonsLooping[0] === false && buttonsLooping[1] === false && buttonsLooping[2] === false){
-        if(buttonColors[0] === buttonColors[1]){
-            if(buttonColors[0] === buttonColors[2]){
-                if(buttonColors[1] === buttonColors[2]){
-                    document.getElementById("colorPicker1").innerHTML = 'W';
-                    document.getElementById("colorPicker2").innerHTML = 'I';
-                    document.getElementById("colorPicker3").innerHTML = 'N';
-                    win = true;
-                }
+    for (let i = 0; i < buttonsLooping.length; i++) {
+        if(buttonsLooping[i] === false){
+            checkArray.splice(i, 1, false)
+        }
+        else if (buttonsLooping[i] !== false){
+            checkArray.splice(i, 1, true)
+        }
+        if (i === buttonsLooping.length){
+            i = 0
+        }
+        check()
+    }
+}
+
+function check(){
+    if (!checkArray.includes(true)){
+        for (let i = 0; i < amountOfButtons; i++) {
+            if(buttonColors[0] === buttonColors[i]){
+                winArray.splice(i, 1, true)
+            }
+            else if (buttonColors[0] !== buttonColors[i]){
+                winArray.splice(i, 1, false)
             }
         }
+        
+        if (!winArray.includes(false)){
+            for (let i = 0; i < amountOfButtons; i++) {
+                let middle = amountOfButtons/2
+                if (Number.isInteger(middle)){
+                    if (i == middle-2){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = 'W';
+                    }
+                    if (i == middle-1){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = 'I';
+                    }
+                    if (i == middle){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = 'N';
+                    }
+                    if (i == middle+1){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = '!';
+                    }
+                }
+                else{
+                    middle = parseInt(middle)
+                    if (i == middle-1){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = 'W';
+                    }
+                    if (i == middle){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = 'I';
+                    }
+                    if (i == middle+1){
+                        document.getElementById("colorPicker"+(i+1)).innerHTML = 'N';
+                    }
+                }
+            }
+            win = true;
+        }
+    }
+}
+
+function createButtons(){
+    for (let i = 0; i < amountOfButtons; i++) {
+        let button = document.createElement('button')
+        document.getElementById('container').appendChild(button)
+        button.id = "colorPicker" + (i + 1)
+        winArray.push("")
+        checkArray.push("")
     }
 }
 

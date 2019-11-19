@@ -1,0 +1,31 @@
+#puzzle{
+    background-color: gray;
+    padding:20px;
+    display: table;
+    margin: 0 auto;
+}
+
+#pieces{
+    padding:10px;
+    display: table;
+    margin: 10px auto 0;
+    font-size: 50px;
+}
+
+.placeholder, .placeholder_filled{
+    border: 1px solid lightgray;
+    float: left;
+}
+
+.piece{
+    border: 1px solid white;
+    float: left;
+    margin: 6px;
+    cursor: pointer;
+}
+
+.piece_active{
+    float: left;
+    border: 3px solid red;
+    margin: 4px;
+}
