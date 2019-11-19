@@ -1,0 +1,42 @@
+#container{
+    background-image: url("bomb.png");
+    width: 500px;
+    height: 250px;
+    display: table;
+    margin: 0 auto;
+    position: relative;
+}
+
+#timer{
+    position: absolute;
+    top: 80px;
+    left: 145px;
+    font-size: 60px;
+}
+
+#wire_good{
+    width: 10px;
+    height: 10px;
+    cursor: crosshair;
+    position: absolute;
+    left: 464px;
+    top: 80px;
+}
+
+#wire_bad{
+    width: 13px;
+    height: 8px;
+    cursor: crosshair;
+    position: absolute;
+    left: 451px;
+    top: 94px;
+}
+
+.blinking{
+    animation:blinkingText 0.8s infinite;
+}
+@keyframes blinkingText{
+    0%{     color: #000;    }
+    50%{    color: transparent;  }
+    100%{   color: #000;    }
+}

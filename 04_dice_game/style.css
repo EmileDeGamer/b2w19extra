@@ -1,0 +1,16 @@
+#container{
+    background-color: gray;
+    padding: 10px;
+    display: table;
+    margin: 0 auto;
+}
+
+#dice{
+    width: 200px;
+    height: 200px;
+}
+
+#log p {
+    margin: 2px;
+    padding: 0;
+}
