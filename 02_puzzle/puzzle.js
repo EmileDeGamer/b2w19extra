@@ -103,6 +103,11 @@ function placeholderClick() {
             }
 
             if (finish === true) {
+                var list = document.getElementById("puzzle");
+                while (list.hasChildNodes()) {  
+                    list.removeChild(list.firstChild);
+                } 
+                document.getElementById('puzzle').appendChild(img)
                 activePiece = false;
                 document.getElementById("pieces").innerHTML = "Well done!";
             }
