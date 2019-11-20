@@ -1,5 +1,5 @@
-const rows = 4;
-const columns = 4;
+const rows = 3;
+const columns = 3;
 
 var img = new Image();
 img.src = 'puzzle.jpg';
@@ -33,49 +33,12 @@ function createPuzzle(imgWidth, imgHeight) {
 
     var piecesRows = [];
 
-    //1 keer van gemaakt
     var div = document.createElement("div");
     div.style.width = (imgWidth+42)+"px";
     div.style.height = (piecesHeight+14)+"px";
     piecesRows.push(div);
 
     var puzzlePieces = [];
-
-    let amount = rows*columns
-    let amountArrays = amount/rows
-    let countersAutomatic = []
-    let counters = []
-    let counter = 0
-    let allowed = []
-
-    /*if (rows == columns || rows > columns){
-        amountArrays = amount / rows
-    }
-    else if (columns > columns){
-        amountArrays = amount / columns
-    }*/
-
-    //Maakt voor elke row een array aan
-    for (let i = 0; i < amountArrays; i++) {
-        let counter = new Array()
-        countersAutomatic.push(counter)
-        allowed.push(false)
-        counters.push(0)
-    } 
-
-    //Zet alle verschillende getallen die erbij horen bij elkaar
-    for (let i = 0; i < amountArrays; i++) {
-        for (let j = 0; j < amountArrays; j++) {
-            /*if (rows == columns || rows > columns){
-                countersAutomatic[i].push(j * rows + counter)
-            }
-            else if (columns > rows){
-                countersAutomatic[i].push(j * columns + counter)
-            }*/
-            countersAutomatic[i].push(j * rows + counter)    
-        }
-        counter+=1
-    }
     
     for (var i = 0; i < rows*columns; i++){
         var piece = document.createElement("div");
@@ -87,21 +50,12 @@ function createPuzzle(imgWidth, imgHeight) {
         piece.id = 'piece'+i;
         piece.onclick = pieceOnClick;
 
-        //Maakt puzzelstukjes aan
-        for (let j = 0; j < countersAutomatic.length; j++) {
-            for (let k = 0; k < countersAutomatic.length; k++) {
-                if (countersAutomatic[j][k] === i){
-                    piece.style.backgroundPositionX = (piecesWidth*-j)+"px";
-                    piece.style.backgroundPositionY = (piecesHeight*counters[j])+"px";
-                    allowed[j] = true
-                }
-            }
-            if (allowed[j] === true){
-                counters[j]-=1
-                allowed[j] = false
-            }
-        }
-        console.log(counters)
+        let column = i % columns
+        let row = (i-column) / columns
+        
+        piece.style.backgroundPositionX = (piecesWidth*column*-1)+"px"
+        piece.style.backgroundPositionY = (piecesHeight*row*-1)+"px"
+
         puzzlePieces.push(piece);
     }
 

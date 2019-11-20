@@ -1,4 +1,4 @@
-const rows = 3;
+const rows = 4;
 const columns = 3;
 
 var img = new Image();
