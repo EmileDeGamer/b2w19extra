@@ -1,4 +1,4 @@
-const rows = 4;
+const rows = 3;
 const columns = 3;
 
 var img = new Image();
@@ -33,17 +33,13 @@ function createPuzzle(imgWidth, imgHeight) {
 
     var piecesRows = [];
 
-    for (var i = 0; i < rows; i++){
-        var div = document.createElement("div");
-        div.style.width = (imgWidth+42)+"px";
-        div.style.height = (piecesHeight+14)+"px";
-        piecesRows.push(div);
-    }
+    var div = document.createElement("div");
+    div.style.width = (imgWidth+42)+"px";
+    div.style.height = (piecesHeight+14)+"px";
+    piecesRows.push(div);
 
     var puzzlePieces = [];
-    let allowed = [true, false, false]
-    let count = 0
-
+    
     for (var i = 0; i < rows*columns; i++){
         var piece = document.createElement("div");
         piece.style.height = piecesHeight+"px";
@@ -52,31 +48,14 @@ function createPuzzle(imgWidth, imgHeight) {
         piece.style.backgroundRepeat = "no-repeat";
         piece.className = "piece";
         piece.id = 'piece'+i;
-        piece.onclick = pieceOnClick;      
+        piece.onclick = pieceOnClick;
 
-        if (allowed[0] === true){
-            piece.style.backgroundPositionX = "0px";
-            piece.style.backgroundPositionY = (piecesHeight*(count)) + "px";
-            allowed[0] = false
-            allowed[1] = true
-        }
-        else if (allowed[1] === true){
-            piece.style.backgroundPositionX = (piecesWidth*-1)+"px";
-            piece.style.backgroundPositionY = (piecesHeight*(count))+"px";
-            allowed[1] = false
-            allowed[2] = true
-        }
-        else if (allowed[2] === true){
-            piece.style.backgroundPositionX = (piecesWidth*-2)+"px";
-            piece.style.backgroundPositionY = (piecesHeight*(count))+"px";
-            allowed[2] = false
-            allowed[0] = true
-        }
-        if (allowed[0] === true && allowed[1] === false && allowed[2] === false){
-            count-=1
-        }
+        let column = i % columns
+        let row = (i-column) / columns
         
-        console.log(count)
+        piece.style.backgroundPositionX = (piecesWidth*column*-1)+"px"
+        piece.style.backgroundPositionY = (piecesHeight*row*-1)+"px"
+
         puzzlePieces.push(piece);
     }
 
@@ -84,27 +63,8 @@ function createPuzzle(imgWidth, imgHeight) {
         return .5 - Math.random();
     });
 
-    let multiplier = 1
-
     for(var i =0; i < puzzlePieces.length; i++){
-        if (i <= rows*multiplier){
-            piecesRows[multiplier-1].appendChild(puzzlePieces[i])
-            //console.log(puzzlePieces)
-        }
-        else if (i > rows*multiplier){
-            multiplier++
-            //console.log(multiplier)
-        }
-        //console.log(rows*multiplier)
-        
-        
-        /*if(i >= 2){
-            piecesRows[0].appendChild(puzzlePieces[i]);
-        }else if(i < 5){
-            piecesRows[2].appendChild(puzzlePieces[i]);
-        }else{
-            piecesRows[1].appendChild(puzzlePieces[i]);
-        }*/
+        piecesRows[0].appendChild(puzzlePieces[i]);
     }
 
     for (var i = 0; i < piecesRows.length; i++) {
