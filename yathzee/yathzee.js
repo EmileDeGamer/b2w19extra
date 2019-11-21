@@ -1,31 +1,54 @@
 let dices = [document.getElementById('dice1'), document.getElementById('dice2'), document.getElementById('dice3'), document.getElementById('dice4'), document.getElementById('dice5')]
 let roll = document.getElementById('roll')
-let rolls = 0, maxRolls = 3, locked = [], sameDices = [], xPositions = [0, -100, -200, -300, -400, -500], choices = [], allFilled = [false, false, false, false, false, false]
+let rolls = 0, maxRolls = 3, locked = [], sameDices = [], xPositions = [0, -100, -200, -300, -400, -500], choices = [], allFilled = [false, false, false, false, false, false, false, false, false, false, false, false, false, false]
 let amounts = [document.getElementById('top_1'), document.getElementById('top_2'), document.getElementById('top_3'), document.getElementById('top_4'), document.getElementById('top_5'), document.getElementById('top_6')]
 let subTotal = document.getElementById('top_subtotal')
 let bonus = document.getElementById('bonus')
 let total = document.getElementById('top_total')
+let subTotalBottom = document.getElementById('bottom_subtotal')
+let grandTotal = document.getElementById('grand_total')
+let progress = []
+let types = [document.getElementById('2_pair'), document.getElementById('kind_3'), document.getElementById('kind_4'), document.getElementById('fullhouse'), document.getElementById('str_small'), document.getElementById('str_big'), document.getElementById('yathzee'), document.getElementById('chance')]
 
 setup()
+roll.innerHTML = "Play! :D"
 
 function setup(){
-    roll.innerHTML = "Play! :D"
+    roll.innerHTML = "Roll! :D"
     roll.onclick = function(){rollDices()}
     rolls = 0
     locked = []
     sameDices = []
     choices = []
     subTotal.innerHTML = 0
+    subTotalBottom.innerHTML = 0
+    grandTotal.innerHTML = 0
+    progress = []
+    for (let i = 0; i < types.length; i++) {
+        if (!types[i].className.includes("chosen")){
+            types[i].innerHTML = 0
+            types[i].className = "points"
+        }
+    }
+    for (let i = 0; i < 8; i++) {
+        if (i == 7){
+            progress.push(1)
+        }
+        else{
+            progress.push(0)
+        }
+    }
     for (let i = 0; i < amounts.length; i++) {
         sameDices.push(0)
         amounts[i].onclick = function(){}
         if (!amounts[i].className.includes("chosen")){
             amounts[i].innerHTML = 0
+            amounts[i].className = "points"
         }
     }
     for (let i = 0; i < dices.length; i++) {
         locked.push(false)
-        dices[i].className = "dice"
+        dices[i].className = "pickup"
     }
 }
 
@@ -58,18 +81,19 @@ function rollDices(){
                 }
             }
             rolls++
-            //console.log('rolling')
         }
-    }
-    else{
-        
     }
 }
 
-function checkWin(){
+function checkAllFilled(){
     for (let i = 0; i < amounts.length; i++) {
         if(amounts[i].innerHTML != 0){
             allFilled.splice(i, 1, true)
+        }
+    }
+    for (let i = 0; i < types.length; i++) {
+        if (types[i].innerHTML != 0){
+            allFilled.splice(i + amounts.length, 1, true)
         }
     }
     if (allFilled.every( (val) => val === true )){
@@ -80,7 +104,7 @@ function checkWin(){
         if (subTotal.innerHTML >= 63){
             bonus.innerHTML = 35
             bonus.className = "points chosen"
-            total.innerHTML = parseInt(bonus.innerHTML) += parseInt(subTotal.innerHTML)
+            total.innerHTML = parseInt(bonus.innerHTML) + parseInt(subTotal.innerHTML)
             total.className = "points chosen"
         }
         else if (subTotal.innerHTML < 63){
@@ -89,6 +113,16 @@ function checkWin(){
             total.innerHTML = subTotal.innerHTML
             total.className = "points chosen"
         }
+
+        for (let i = 0; i < types.length; i++) {
+            subTotalBottom.innerHTML = parseInt(subTotalBottom.innerHTML) + parseInt(types[i].innerHTML)
+            subTotalBottom.className = "points chosen"
+        }
+        
+        grandTotal.innerHTML = parseInt(total.innerHTML) + parseInt(subTotalBottom.innerHTML)
+        grandTotal.className = "points chosen"
+        roll.innerHTML = "Play again! :D"
+        roll.onclick = function(){location.reload()}
     }
 }
 
@@ -117,7 +151,6 @@ function calculate(){
     roll.innerHTML = "Choose! :D"
     calculateAmountsOfSameDices()
     showPosibilities()
-    //writeAmounts()
 }
 
 function calculateAmountsOfSameDices(){
@@ -128,6 +161,30 @@ function calculateAmountsOfSameDices(){
             }
         }
     }
+
+    for (let i = 0; i < amounts.length; i++) {
+        if (sameDices[i] >= 4){
+            progress[2]++
+        }
+        if (sameDices[i] == 3){
+            progress[1]++
+        }
+        if (sameDices[i] == 2){
+            progress[0]++
+        }
+        if (progress[0] > 0 && progress[1] > 0){
+            progress[3]++
+        }
+        if (sameDices[0] > 0 && sameDices[1] > 0 && sameDices[2] > 0 && sameDices[3] > 0 && sameDices[4] > 0 || sameDices[1] > 0 && sameDices[2] > 0 && sameDices[3] > 0 && sameDices[4] > 0 && sameDices[5] > 0){
+            progress[5]++
+        }
+        else if (sameDices[0] > 0 && sameDices[1] > 0 && sameDices[2] > 0 && sameDices[3] > 0 || sameDices[1] > 0 && sameDices[2] > 0 && sameDices[3] > 0 && sameDices[4] > 0 || sameDices[2] > 0 && sameDices[3] > 0 && sameDices[4] > 0 && sameDices[5] > 0){
+            progress[4]++
+        }
+        if (sameDices[0] == 5 || sameDices[1] == 5 || sameDices[2] == 5 || sameDices[3] == 5 || sameDices[4] == 5 || sameDices[5] == 5){
+            progress[6]++
+        }
+    }
 }
 
 function showPosibilities(){
@@ -135,40 +192,82 @@ function showPosibilities(){
         if (sameDices[i] != 0 && !amounts[i].className.includes("chosen")){
             amounts[i].innerHTML = sameDices[i] * (i+1)
             amounts[i].className = "points posibility"
-            amounts[i].onclick = function(){choose(i)}
+            amounts[i].onclick = function(){choose("amounts", i)}
             choices.push(i)
-            //console.log(choices) 
-        }
-        else if (!amounts[i].className.includes("chosen")){
-            amounts[i].innerHTML = sameDices[i] * (i+1)
         }
     }
+    
+    for (let i = 0; i < types.length; i++) {
+        if (!types[i].className.includes("chosen")){
+            if (i != 0 && i != 7){
+                if (progress[i] >= 1){
+                    setElement(types[i])
+                    choices.push(i+amounts.length)
+                    if (i == 3){
+                        types[3].innerHTML = 25
+                    }
+                    if (i == 4){
+                        types[4].innerHTML = 30
+                    }
+                    if (i == 5){
+                        types[5].innerHTML = 40
+                    }
+                    if (i == 6){
+                        types[6].innerHTML = 50
+                    }
+                }
+            }
+            if (i == 0){
+                if (progress[i] >= 2){
+                    setElement(types[i])
+                    choices.push(i+amounts.length)
+                }
+            }
+            if (i == 7){
+                if (progress[i] > 0){
+                    setElement(types[i])
+                    choices.push(7+amounts.length)
+                }
+            }
+        }
+    }
+
     if (choices.length == 0){
         setup()
-        checkWin()
+        checkAllFilled()
     }
     else if (choices.length == 1){
-        amounts[choices].className = "points chosen"
+        if (choices < 6){
+            amounts[choices].className = "points chosen"
+        }
+        if (choices >= 6){
+            types[choices-amounts.length].className = "points chosen"
+        }
         setup()
-        checkWin()
+        checkAllFilled()
     }
 }
 
-function choose(chosen){
-    for (let i = 0; i < amounts.length; i++) {
-        if (i != chosen && !amounts[i].className.includes("chosen")){
-            amounts[i].className = "points"
-        }
-        else if (chosen == i){
-            amounts[i].className = "points chosen"
-            setup()
-            checkWin()
-        }
+function choose(element, amount){
+    if (element == element[7]){
+        progress[7]--
     }
+    if (element == "amounts"){
+        amounts[amount].className = "points chosen"
+    }
+    else if (element != "amounts"){
+        element.className = "points chosen"
+    }
+    setup()
+    checkAllFilled()
 }
 
-/*function writeAmounts(){
-    for (let i = 0; i < amounts.length; i++) {
-        amounts[i].innerHTML = sameDices[i] * (i+1)
+function setElement(element){
+    if (!element.className.includes("chosen")){
+        for (let j = 0; j < amounts.length; j++) {
+            element.innerHTML = parseInt(element.innerHTML) + parseInt(sameDices[j] * (j + 1))
+        }
+        element.className = "points posibility"
+        element.onclick = function(){choose(element)}
     }
-}*/
+}
