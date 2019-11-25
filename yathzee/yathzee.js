@@ -98,8 +98,10 @@ function checkAllFilled(){
     }
     if (allFilled.every( (val) => val === true )){
         for (let i = 0; i < amounts.length; i++) {
-            subTotal.innerHTML = parseInt(subTotal.innerHTML) + parseInt(amounts[i].innerHTML)
-            subTotal.className = "points chosen"
+            if (amounts[i].innerHTML != "-"){
+                subTotal.innerHTML = parseInt(subTotal.innerHTML) + parseInt(amounts[i].innerHTML)
+                subTotal.className = "points chosen"
+            }
         }
         if (subTotal.innerHTML >= 63){
             bonus.innerHTML = 35
@@ -115,8 +117,11 @@ function checkAllFilled(){
         }
 
         for (let i = 0; i < types.length; i++) {
-            subTotalBottom.innerHTML = parseInt(subTotalBottom.innerHTML) + parseInt(types[i].innerHTML)
-            subTotalBottom.className = "points chosen"
+            if (types[i].innerHTML != "-")
+            {
+                subTotalBottom.innerHTML = parseInt(subTotalBottom.innerHTML) + parseInt(types[i].innerHTML)
+                subTotalBottom.className = "points chosen"
+            }
         }
         
         grandTotal.innerHTML = parseInt(total.innerHTML) + parseInt(subTotalBottom.innerHTML)
@@ -166,10 +171,10 @@ function calculateAmountsOfSameDices(){
         if (sameDices[i] >= 4){
             progress[2]++
         }
-        if (sameDices[i] == 3){
+        if (sameDices[i] >= 3){
             progress[1]++
         }
-        if (sameDices[i] == 2){
+        if (sameDices[i] >= 2){
             progress[0]++
         }
         if (progress[0] > 0 && progress[1] > 0){
@@ -226,15 +231,27 @@ function showPosibilities(){
             if (i == 7){
                 if (progress[i] > 0){
                     setElement(types[i])
-                    choices.push(7+amounts.length)
+                    choices.push(i+amounts.length)
                 }
             }
         }
     }
 
     if (choices.length == 0){
-        setup()
-        checkAllFilled()
+        for (let i = 0; i < types.length; i++) {
+            if (!types[i].className.includes("chosen")){
+                types[i].className = "points posibility"
+                types[i].innerHTML = "-"
+                types[i].onclick = function(){removeTypes(i)}
+            }
+        }
+        for (let i = 0; i < amounts.length; i++) {
+            if(!amounts[i].className.includes("chosen")){
+                amounts[i].innerHTML = "-"
+                amounts[i].className = "points posibility"
+                amounts[i].onclick = function(){removeAmounts(i)}
+            }
+        }
     }
     else if (choices.length == 1){
         if (choices < 6){
@@ -270,4 +287,18 @@ function setElement(element){
         element.className = "points posibility"
         element.onclick = function(){choose(element)}
     }
+}
+
+function removeTypes(i){
+    types[i].innerHTML = '-'
+    types[i].className = 'points chosen'
+    setup()
+    checkAllFilled()
+}
+
+function removeAmounts(i){
+    amounts[i].innerHTML = '-'
+    amounts[i].className = 'points chosen'
+    setup()
+    checkAllFilled()
 }
